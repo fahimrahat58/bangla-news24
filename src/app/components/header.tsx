@@ -12,7 +12,7 @@ const Header = () => {
   }).format(new Date());
 
   return (
-    <header className="w-full bg-white border-b border-gray-200 py-3 px-4 md:px-8">
+    <header className="w-full bg-white py-3 px-4 md:px-8">
       {/* Header Top Section */}
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Left Spacer (to keep the center perfectly balanced) */}
