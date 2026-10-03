@@ -39,7 +39,9 @@ async function getSelectedNews(): Promise<Article[]> {
     const res = await fetch(
       "https://news-api-v2.vercel.app/api/news/sections",
       {
-        cache: "no-store",
+        next: {
+          revalidate: 3600,
+        },
       },
     );
 
