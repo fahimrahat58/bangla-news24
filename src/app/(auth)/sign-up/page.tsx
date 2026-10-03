@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { signUp } from "@/app/lib/auth-client";
+import { signIn, signUp } from "@/app/lib/auth-client";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function SignUpPage() {
@@ -47,24 +47,26 @@ export default function SignUpPage() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    await signIn.social({
+      provider: "google",
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50/30 px-4 py-8">
       <div className="w-full max-w-md">
-        {/* Title */}
         <h1 className="text-3xl md:text-4xl font-bold text-center text-[#c00000] mb-8 tracking-wide">
           সাইন আপ
         </h1>
 
-        {/* Error Alert */}
         {errorMsg && (
           <div className="bg-red-50 text-red-600 border border-red-200 text-sm p-3 rounded-md mb-4 text-center">
             {errorMsg}
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* নাম */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-1.5">
               নাম
@@ -78,7 +80,6 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* Image */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-1.5">
               Image
@@ -92,7 +93,6 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* ইমেইল */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-1.5">
               ইমেইল
@@ -106,7 +106,6 @@ export default function SignUpPage() {
             />
           </div>
 
-          {/* পাসওয়ার্ড */}
           <div>
             <label className="block text-gray-700 text-sm font-medium mb-1.5">
               পাসওয়ার্ড
@@ -138,7 +137,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-          {/* Submit Button */}
           <div className="pt-2">
             <button
               type="submit"
@@ -150,7 +148,6 @@ export default function SignUpPage() {
           </div>
         </form>
 
-        {/* Footer Link */}
         <div className="mt-5 text-center text-sm text-gray-700">
           অ্যাকাউন্ট আছে?{" "}
           <Link
@@ -159,6 +156,13 @@ export default function SignUpPage() {
           >
             সাইন ইন করুন
           </Link>
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            className="w-full mt-3 bg-white border border-gray-300 hover:bg-gray-50 text-gray-800 font-medium py-3 rounded-md transition-colors text-base"
+          >
+            Google দিয়ে সাইন ইন করুন
+          </button>
         </div>
       </div>
     </div>
