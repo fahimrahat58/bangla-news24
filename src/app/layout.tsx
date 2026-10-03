@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Noto_Sans_Bengali } from "next/font/google";
 import "./globals.css";
 import Header from "./components/header";
 import NavLinks from "./components/navlinks";
+import Footer from "./components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,10 +33,11 @@ export default function RootLayout({
       lang="bn"
       className={`${geistSans.variable} ${geistMono.variable} ${banglaFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-[var(--font-bangla)]">
+      <body className="min-h-full flex flex-col font-(--font-bangla)">
         <Header/>
         <NavLinks/>
         {children}
+        <Footer/>
       </body>
     </html>
   );

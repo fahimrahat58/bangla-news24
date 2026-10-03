@@ -12,7 +12,6 @@ interface Article {
   firstPublished?: string;
 }
 
-// তারিখ ও সময়কে সংক্ষেপিত বাংলায় রূপান্তর করার ফাংশন
 function formatBengaliDateTime(isoString?: string) {
   if (!isoString) return "";
 
@@ -30,22 +29,28 @@ function formatBengaliDateTime(isoString?: string) {
       minute: "2-digit",
       hour12: true,
     })
-    .replace(/[0-9]/g, (digit) => "০১২৩৪৫৬৭৮৯"[parseInt(digit)]);
+    .replace(/[0-9]/g, (digit) => "০১২৩৪৫৬৭৮৯"[Number(digit)]);
 
   return `${dateFormatted} এ ${timeFormatted}`;
 }
 
 async function getSelectedNews(): Promise<Article[]> {
   try {
-    const res = await fetch("https://news-api-v2.vercel.app/api/news/sections", {
-      cache: "no-store",
-    });
+    const res = await fetch(
+      "https://news-api-v2.vercel.app/api/news/sections",
+      {
+        cache: "no-store",
+      },
+    );
 
-    if (!res.ok) return [];
+    if (!res.ok) {
+      return [];
+    }
 
     const data = await res.json();
+
     const selectedNewsSection = data?.data?.find(
-      (section: { title?: string }) => section.title === "ভিডিও"
+      (section: { title?: string }) => section.title === "ভিডিও",
     );
 
     return selectedNewsSection?.articles || [];
@@ -60,69 +65,82 @@ export default async function Video() {
 
   if (!articles || articles.length === 0) {
     return (
-      <div className="max-w-4xl mx-auto p-6 text-center text-gray-500">
-        কোনো খবর পাওয়া যায়নি।
-      </div>
+      <section className="w-full px-4 py-12">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-gray-500">কোনো খবর পাওয়া যায়নি।</p>
+        </div>
+      </section>
     );
   }
 
   return (
-    /* max-w-4xl ব্যবহার করে পুরো সেকশনের চওড়া কমানো হয়েছে */
-    <section className="max-w-4xl mx-auto px-4 py-6">
-      {/* হেডার */}
-      <div className="border-b-2 border-red-700 mb-5 pb-1">
-        <h2 className="text-lg font-bold text-gray-900">ভিডিও</h2>
+    <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      <div className="flex items-center justify-between border-b border-gray-200 mb-6 sm:mb-8">
+        <div className="relative">
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 pb-3">
+            ভিডিও
+          </h2>
+
+          <span className="absolute bottom-0 left-0 w-16 sm:w-20 h-0.5 bg-red-600" />
+        </div>
+
+        <Link
+          href="/video"
+          className="text-xs sm:text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-200"
+        >
+          আরও দেখুন →
+        </Link>
       </div>
 
-      {/* গ্যাপ কমিয়ে gap-4 করা হয়েছে এবং আরও ছোট কার্ড সাইজ */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
         {articles.map((article) => (
-          <div
+          <Link
             key={article.id}
-            className="bg-[#f7f7f7] rounded-md p-3 flex flex-col justify-between border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-200"
+            href={`/article/${article.id}`}
+            className="group block h-full"
           >
-            <div>
-              {/* ছবির হাইট কিছুটা কমিয়ে h-36 করা হয়েছে */}
-              <div className="relative w-full h-36 mb-2.5 rounded overflow-hidden bg-gray-200">
+            <article className="h-full overflow-hidden rounded-xl bg-white border border-gray-200 shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="relative w-full aspect-[16/10] overflow-hidden bg-gray-100">
                 {article.imageUrl ? (
                   <Image
                     src={article.imageUrl}
                     alt={article.imageAlt || article.title}
                     fill
-                    className="object-cover"
+                    sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">
+                  <div className="absolute inset-0 flex items-center justify-center text-sm text-gray-400">
                     No Image
                   </div>
                 )}
               </div>
 
-              {/* ক্যাটাগরি */}
-              <span className="text-[11px] text-red-600 font-semibold block mb-0.5">
-                {article.category || "নির্বাচিত খবর"}
-              </span>
+              <div className="flex flex-col p-4 sm:p-5">
+                <span className="w-fit text-xs font-semibold text-red-600 mb-2">
+                  {article.category || "ভিডিও"}
+                </span>
 
-              {/* শিরোনাম */}
-              <Link href={article.link || "#"} target="_blank">
-                <h3 className="text-sm font-bold text-gray-900 line-clamp-2 hover:text-red-600 transition-colors duration-150 mb-1.5 leading-snug">
+                <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-7 line-clamp-3 group-hover:text-red-600 transition-colors duration-200">
                   {article.title}
                 </h3>
-              </Link>
 
-              {/* সংক্ষিপ্ত বর্ণনা */}
-              <p className="text-[11px] text-gray-600 line-clamp-2 leading-relaxed mb-3">
-                {article.description}
-              </p>
-            </div>
+                {article.description && (
+                  <p className="mt-3 text-sm text-gray-600 leading-6 line-clamp-3">
+                    {article.description}
+                  </p>
+                )}
 
-            {/* তারিখ ও সময় */}
-            {article.firstPublished && (
-              <div className="text-[10px] text-gray-400 mt-auto pt-1.5 border-t border-gray-200">
-                {formatBengaliDateTime(article.firstPublished)}
+                {article.firstPublished && (
+                  <div className="mt-5 pt-3 border-t border-gray-100">
+                    <time className="text-xs text-gray-400">
+                      {formatBengaliDateTime(article.firstPublished)}
+                    </time>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </article>
+          </Link>
         ))}
       </div>
     </section>

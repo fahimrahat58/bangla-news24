@@ -17,13 +17,13 @@ const NavLinks = async () => {
     });
 
     if (!res.ok) {
-      return null; // API রেসপন্স সফল না হলে কিছুই রেন্ডার করবে না
+      return null;
     }
 
     const data = await res.json();
-    
-    // ডাটা অ্যারে নিশ্চিত করার জন্য fallback দেওয়া হলো
-    const navs: Navs[] = data?.data || [];
+
+    const navs: Navs[] = Array.isArray(data?.data) ? data.data : [];
+
     filteredNavs = navs.filter((n) => n.scrapable);
   } catch (error) {
     console.error("Failed to fetch navigation categories:", error);
@@ -32,10 +32,27 @@ const NavLinks = async () => {
 
   return (
     <nav className="w-full bg-white border-b border-gray-100">
-      <div className="max-w-7xl mx-auto flex items-center justify-center gap-6 text-sm text-gray-700 font-medium overflow-x-auto py-2 px-4 no-scrollbar">
+      <div
+        className="
+          max-w-xl mx-auto
+          flex items-center justify-between
+          gap-3 sm:gap-4 md:gap-5 lg:gap-6
+          text-xs sm:text-sm
+          text-gray-700
+          font-medium
+          overflow-x-auto
+          py-2.5 sm:py-3
+          px-3 sm:px-4
+          no-scrollbar
+        "
+      >
         <Link
           href="/"
-          className="hover:text-[#b91c1c] transition-colors whitespace-nowrap"
+          className="
+            shrink-0
+            hover:text-[#b91c1c]
+            transition-colors
+          "
         >
           হোম
         </Link>
@@ -44,7 +61,11 @@ const NavLinks = async () => {
           <Link
             key={n.slug}
             href={`/navcategory/${n.slug}`}
-            className="hover:text-[#b91c1c] transition-colors whitespace-nowrap"
+            className="
+              shrink-0
+              hover:text-[#b91c1c]
+              transition-colors
+            "
           >
             {n.title}
           </Link>

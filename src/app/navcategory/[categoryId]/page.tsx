@@ -36,7 +36,7 @@ const CategoryNewsPage = async ({ params }: PageProps) => {
     const res = await fetch(
       `https://news-api-v2.vercel.app/api/category/${categoryId}`,
       {
-        next: { revalidate: 3600 }, // ১ ঘন্টা ক্যাশিং
+        next: { revalidate: 3600 }, 
       }
     );
 
@@ -55,19 +55,19 @@ const CategoryNewsPage = async ({ params }: PageProps) => {
   if (!articles || articles.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-16 text-center text-gray-600">
-        এই ক্যাটাগরিতে কোনো সংবাদ পাওয়া যায়নি।
+        
       </div>
     );
   }
 
   return (
     <><Marquee /><div className="max-w-7xl mx-auto px-4 py-6 bg-gray-50 min-h-screen">
-      {/* ক্যাটাগরি হেডলাইন */}
+      
       <div className="border-b-2 border-red-700 pb-2 mb-6">
         <h1 className="text-3xl font-bold text-gray-900">{categoryTitle}</h1>
       </div>
 
-      {/* নিউজ কার্ড গ্রিড */}
+     
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((news) => (
           <Link
@@ -75,7 +75,7 @@ const CategoryNewsPage = async ({ params }: PageProps) => {
             href={`/article/${news.id}`}
             className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col group"
           >
-            {/* ইমেজ কন্টেইনার (sizes প্রপস যুক্ত করা হয়েছে ওয়ার্নিং বন্ধের জন্য) */}
+           
             <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
               <Image
                 src={news.imageUrl || "/placeholder.jpg"}
@@ -85,7 +85,7 @@ const CategoryNewsPage = async ({ params }: PageProps) => {
                 className="object-cover group-hover:scale-105 transition-transform duration-300" />
             </div>
 
-            {/* টেক্সট কন্টেন্ট */}
+            
             <div className="p-4 flex flex-col grow justify-between">
               <div>
                 <span className="text-xs text-red-600 font-medium block mb-1">
@@ -101,7 +101,7 @@ const CategoryNewsPage = async ({ params }: PageProps) => {
                 </p>
               </div>
 
-              {/* তারিখ ও সোর্স */}
+              
               <div className="text-xs text-gray-400 border-t pt-2 mt-auto flex justify-between items-center">
                 <span>
                   {new Date(news.firstPublished).toLocaleDateString("bn-BD", {

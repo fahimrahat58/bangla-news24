@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import logo from "../../../public/logo.webp";
-
 
 const Header = () => {
   const today = new Intl.DateTimeFormat("bn-BD", {
@@ -12,40 +12,49 @@ const Header = () => {
   }).format(new Date());
 
   return (
-    <header className="w-full bg-white py-3 px-4 md:px-8">
-      {/* Header Top Section */}
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Left Spacer (to keep the center perfectly balanced) */}
-        <div className="w-36 hidden md:block"></div>
+    <header className="w-full bg-white border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-8 py-3">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3 md:gap-0">
+          <div className="hidden md:block w-36" />
 
-        {/* Center: Logo, Title & Date */}
-        <div className="flex items-center gap-3 justify-center text-center">
-          <Image
-            src={logo}
-            alt="Logo"
-            width={40}
-            height={40}
-            className="h-12 w-auto object-contain"
-          />
-          <div className="flex flex-col items-start">
-            <h1 className="text-2xl md:text-3xl font-bold text-[#b91c1c] tracking-tight">
-              Bangla News 24
-            </h1>
-            <span className="text-xs text-gray-500 font-medium">{today}</span>
+          <div className="flex items-center justify-center gap-2 sm:gap-3 text-center">
+            <Image
+              src={logo}
+              alt="Bangla News 24 Logo"
+              width={40}
+              height={40}
+              priority
+              className="h-10 sm:h-11 md:h-12 w-auto object-contain"
+            />
+
+            <div className="flex flex-col items-start">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#b91c1c] tracking-tight leading-tight">
+                Bangla News 24
+              </h1>
+
+              <span className="text-[10px] sm:text-xs text-gray-500 font-medium mt-0.5">
+                {today}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium">
+            <Link
+              href="/sign-in"
+              className="text-gray-700 hover:text-[#b91c1c] transition-colors px-2 py-1.5 whitespace-nowrap"
+            >
+              সাইন ইন
+            </Link>
+
+            <Link
+              href="/sign-up"
+              className="bg-[#b91c1c] hover:bg-red-800 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
+            >
+              সাইন আপ
+            </Link>
           </div>
         </div>
-
-        {/* Right: Sign In & Sign Up Buttons */}
-        <div className="flex items-center gap-3 text-sm font-medium">
-          <button className="text-gray-700 hover:text-red-600 transition-colors px-2 py-1">
-            সাইন ইন
-          </button>
-          <button className="bg-[#b91c1c] hover:bg-red-800 text-white px-4 py-1.5 rounded text-sm font-medium transition-colors">
-            সাইন আপ
-          </button>
-        </div>
       </div>
-      
     </header>
   );
 };
