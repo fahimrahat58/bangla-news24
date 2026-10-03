@@ -1,9 +1,14 @@
+"use client";
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "../../../public/logo.webp";
+import { useSession, signOut } from "@/app/lib/auth-client";
 
 const Header = () => {
+  const { data: session, isPending } = useSession();
+
   const today = new Intl.DateTimeFormat("bn-BD", {
     weekday: "long",
     day: "numeric",
@@ -39,19 +44,41 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium">
-            <Link
-              href="/sign-in"
-              className="text-gray-700 hover:text-[#b91c1c] transition-colors px-2 py-1.5 whitespace-nowrap"
-            >
-              সাইন ইন
-            </Link>
+            {isPending ? (
+              <span className="text-gray-400">লোড হচ্ছে...</span>
+            ) : session ? (
+              <>
+                <span className="text-gray-700 whitespace-nowrap">
+                  স্বাগতম,{" "}
+                  <span className="text-[#b91c1c] font-semibold">
+                    {session.user.name}
+                  </span>
+                </span>
 
-            <Link
-              href="/sign-up"
-              className="bg-[#b91c1c] hover:bg-red-800 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap"
-            >
-              সাইন আপ
-            </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="bg-[#b91c1c] hover:bg-red-800 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap cursor-pointer"
+                >
+                  সাইন আউট
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/sign-in"
+                  className="text-gray-700 hover:text-[#b91c1c] transition-colors px-2 py-1.5 whitespace-nowrap cursor-pointer"
+                >
+                  সাইন ইন
+                </Link>
+
+                <Link
+                  href="/sign-up"
+                  className="bg-[#b91c1c] hover:bg-red-800 text-white px-3 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors whitespace-nowrap cursor-pointer"
+                >
+                  সাইন আপ
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
