@@ -85,7 +85,7 @@ export default async function Health() {
         </div>
 
         <Link
-          href="/health"
+          href="/category/health"
           className="text-xs sm:text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-200"
         >
           আরও দেখুন →

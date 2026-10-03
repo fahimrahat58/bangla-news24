@@ -85,7 +85,7 @@ export default async function Bd() {
         </div>
 
         <Link
-          href="/bd"
+          href="/category/politics"
           className="text-xs sm:text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-200"
         >
           আরও দেখুন →
@@ -117,9 +117,8 @@ export default async function Bd() {
               </div>
 
               <div className="flex flex-col p-4 sm:p-5">
-                {/* Category */}
                 <span className="w-fit text-xs font-semibold text-red-600 mb-2">
-                  {article.category || "নির্বাচিত খবর"}
+                  {article.category || "বাংলাদেশ"}
                 </span>
 
                 <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-7 line-clamp-3 group-hover:text-red-600 transition-colors duration-200">

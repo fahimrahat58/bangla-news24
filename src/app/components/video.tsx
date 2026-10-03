@@ -85,7 +85,7 @@ export default async function Video() {
         </div>
 
         <Link
-          href="/video"
+          href="/category/video"
           className="text-xs sm:text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-200"
         >
           আরও দেখুন →

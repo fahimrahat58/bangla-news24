@@ -85,7 +85,7 @@ export default async function Others() {
         </div>
 
         <Link
-          href="/others"
+          href="/category/technology"
           className="text-xs sm:text-sm font-medium text-gray-500 hover:text-red-600 transition-colors duration-200"
         >
           আরও দেখুন →
