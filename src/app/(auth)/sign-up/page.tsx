@@ -2,175 +2,160 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { signUp } from "@/app/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { signUp } from "@/app/lib/auth-client";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignUpPage() {
   const router = useRouter();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    imageUrl: "",
-    email: "",
-    password: "",
-  });
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsLoading(true);
-    setError("");
+    setLoading(true);
+    setErrorMsg("");
 
-    const { name, imageUrl, email, password } = formData;
+    const formData = new FormData(e.currentTarget);
+    const data = Object.fromEntries(formData.entries()) as Record<
+      string,
+      string
+    >;
 
-    const result = await signUp.email({
-      name,
-      email,
-      password,
-      image: imageUrl || undefined,
-      callbackURL: "/",
-    });
+    try {
+      const { error } = await signUp.email({
+        name: data.name,
+        image: data.image,
+        email: data.email,
+        password: data.password,
+        callbackURL: "/",
+      });
 
-    if (result.error) {
-      setError(result.error.message || "অ্যাকাউন্ট তৈরি করা যায়নি");
-      setIsLoading(false);
-      return;
+      if (error) {
+        setErrorMsg(error.message || "সাইন আপ করতে সমস্যা হয়েছে।");
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      console.error("Sign up error:", err);
+      setErrorMsg("একটি অপ্রত্যাশিত ত্রুটি ঘটেছে।");
+    } finally {
+      setLoading(false);
     }
-
-    router.push("/");
   };
 
   return (
-    <div className="min-h-[75vh] flex items-center justify-center bg-gray-50/50 px-4 py-10 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-gray-100 shadow-xl shadow-gray-100/50">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-red-600 tracking-tight">
-            সাইন আপ
-          </h1>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50/30 px-4 py-8">
+      <div className="w-full max-w-md">
+        {/* Title */}
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#c00000] mb-8 tracking-wide">
+          সাইন আপ
+        </h1>
 
-          <p className="mt-2 text-sm text-gray-500">
-            নতুন অ্যাকাউন্ট তৈরি করতে নিচের তথ্যগুলো পূরণ করুন
-          </p>
-        </div>
+        {/* Error Alert */}
+        {errorMsg && (
+          <div className="bg-red-50 text-red-600 border border-red-200 text-sm p-3 rounded-md mb-4 text-center">
+            {errorMsg}
+          </div>
+        )}
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
+          {/* নাম */}
           <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
+            <label className="block text-gray-700 text-sm font-medium mb-1.5">
               নাম
             </label>
 
             <input
-              id="name"
-              name="name"
               type="text"
+              name="name"
               required
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="আপনার পুরো নাম"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all duration-200 text-sm text-gray-900 bg-white"
+              className="w-full px-3.5 py-2.5 bg-[#fafafa] border border-gray-300 rounded-md outline-none focus:border-[#c00000] focus:bg-white text-gray-800 text-sm transition-all"
             />
           </div>
 
-          {/* Image URL */}
+          {/* Image */}
           <div>
-            <label
-              htmlFor="imageUrl"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
-              প্রোফাইল ইমেজ URL
+            <label className="block text-gray-700 text-sm font-medium mb-1.5">
+              Image
             </label>
 
             <input
-              id="imageUrl"
-              name="imageUrl"
               type="url"
-              value={formData.imageUrl}
-              onChange={handleChange}
-              placeholder="https://example.com/photo.jpg"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all duration-200 text-sm text-gray-900 bg-white"
+              name="image"
+              placeholder="https://example.com/avatar.jpg"
+              className="w-full px-3.5 py-2.5 bg-[#fafafa] border border-gray-300 rounded-md outline-none focus:border-[#c00000] focus:bg-white text-gray-800 text-sm transition-all"
             />
           </div>
 
-          {/* Email */}
+          {/* ইমেইল */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
+            <label className="block text-gray-700 text-sm font-medium mb-1.5">
               ইমেইল
             </label>
 
             <input
-              id="email"
-              name="email"
               type="email"
+              name="email"
               required
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="example@mail.com"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all duration-200 text-sm text-gray-900 bg-white"
+              className="w-full px-3.5 py-2.5 bg-[#fafafa] border border-gray-300 rounded-md outline-none focus:border-[#c00000] focus:bg-white text-gray-800 text-sm transition-all"
             />
           </div>
 
-          {/* Password */}
+          {/* পাসওয়ার্ড */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
+            <label className="block text-gray-700 text-sm font-medium mb-1.5">
               পাসওয়ার্ড
             </label>
 
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all duration-200 text-sm text-gray-900 bg-white"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                required
+                autoComplete="new-password"
+                className="w-full px-3.5 py-2.5 pr-11 bg-[#fafafa] border border-gray-300 rounded-md outline-none focus:border-[#c00000] focus:bg-white text-gray-800 text-sm transition-all"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-gray-400 hover:text-[#c00000] transition-colors"
+                aria-label={
+                  showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"
+                }
+              >
+                {showPassword ? (
+                  <EyeOff size={19} strokeWidth={1.8} />
+                ) : (
+                  <Eye size={19} strokeWidth={1.8} />
+                )}
+              </button>
+            </div>
           </div>
 
-          {/* Error */}
-          {error && (
-            <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
-              {error}
-            </p>
-          )}
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 disabled:bg-red-400 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 mt-2"
-          >
-            {isLoading ? "অ্যাকাউন্ট তৈরি হচ্ছে..." : "সাইন আপ করুন"}
-          </button>
+          {/* Submit Button */}
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#c00000] hover:bg-[#a00000] active:bg-[#800000] text-white font-medium py-3 rounded-md transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "প্রসেসিং হচ্ছে..." : "সাইন আপ করুন"}
+            </button>
+          </div>
         </form>
 
-        <div className="mt-6 text-center text-sm text-gray-600 border-t border-gray-100 pt-5">
+        {/* Footer Link */}
+        <div className="mt-5 text-center text-sm text-gray-700">
           অ্যাকাউন্ট আছে?{" "}
           <Link
-            href="/signin"
-            className="font-semibold text-red-600 hover:text-red-700 hover:underline ml-1"
+            href="/sign-in"
+            className="text-[#c00000] font-bold hover:underline"
           >
             সাইন ইন করুন
           </Link>

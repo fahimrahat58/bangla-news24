@@ -1,78 +1,54 @@
-import React from "react";
-import ReactMarquee from "react-fast-marquee";
-import Link from "next/link";
+import MarqueeClient from "./marquee-client";
 
 interface NewsItem {
   _id?: string;
   id?: string;
   title: string;
-  slug?: string;
 }
 
-const Marquee = async () => {
-  let latest: NewsItem[];
-
+async function getLatestNews(): Promise<NewsItem[]> {
   try {
     const res = await fetch(
       "https://news-api-v2.vercel.app/api/news?limit=10",
       {
-        next: { revalidate: 60 },
+        next: {
+          revalidate: 60,
+        },
       },
     );
 
     if (!res.ok) {
-      return null;
+      console.error(
+        "Latest news API error:",
+        res.status,
+      );
+
+      return [];
     }
 
     const data = await res.json();
-    latest = data?.data || [];
+
+    if (Array.isArray(data?.data)) {
+      return data.data;
+    }
+
+    if (Array.isArray(data)) {
+      return data;
+    }
+
+    return [];
   } catch (error) {
-    console.error("Error fetching latest news:", error);
-    return null;
+    console.error(
+      "Error fetching latest news:",
+      error,
+    );
+
+    return [];
   }
+}
 
-  if (latest.length === 0) {
-    return null;
-  }
+export default async function Marquee() {
+  const latest = await getLatestNews();
 
-  return (
-    <div className="w-full bg-[#b91c1c] text-white flex items-center overflow-hidden">
-      <div className="shrink-0 bg-[#881337] px-4 sm:px-5 py-2 font-bold text-xs sm:text-sm whitespace-nowrap z-10 shadow-md">
-        সর্বশেষ
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <ReactMarquee
-          speed={70}
-          pauseOnHover={true}
-          gradient={false}
-          className="py-2"
-        >
-          {latest.map((item, index) => {
-            const articleId = item._id || item.id;
-
-            if (!articleId) return null;
-
-            return (
-              <div
-                key={articleId || index}
-                className="flex items-center text-xs sm:text-sm font-medium"
-              >
-                <Link
-                  href={`/article/${articleId}`}
-                  className="px-3 whitespace-nowrap hover:text-yellow-200 hover:underline transition-colors"
-                >
-                  {item.title}
-                </Link>
-
-                <span className="text-red-300 font-bold mx-2">•</span>
-              </div>
-            );
-          })}
-        </ReactMarquee>
-      </div>
-    </div>
-  );
-};
-
-export default Marquee;
+  return <MarqueeClient latest={latest} />;
+}

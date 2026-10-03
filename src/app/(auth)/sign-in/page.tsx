@@ -2,100 +2,140 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { signIn } from "@/app/lib/auth-client";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function SignInPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Sign in with:", { email, password });
-    // এখানে আপনার Authentication Logic (NextAuth / Firebase / Custom API) যুক্ত করুন
+
+    setLoading(true);
+    setErrorMsg("");
+
+    const formData = new FormData(e.currentTarget);
+
+    const email = String(formData.get("email") || "");
+    const password = String(formData.get("password") || "");
+
+    try {
+      const { error } = await signIn.email({
+        email,
+        password,
+        callbackURL: "/",
+      });
+
+      if (error) {
+        setErrorMsg(error.message || "ইমেইল বা পাসওয়ার্ড ভুল হয়েছে।");
+        return;
+      }
+
+      router.replace("/");
+      router.refresh();
+    } catch (error) {
+      console.error("Sign in error:", error);
+
+      setErrorMsg("সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center bg-gray-50/50 px-4 py-12 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl border border-gray-100 shadow-xl shadow-gray-100/50">
-        {/* Title */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-red-600 tracking-tight">
-            সাইন ইন
-          </h1>
-          <p className="mt-2 text-sm text-gray-500">
-            আপনার ইমেইল ও পাসওয়ার্ড দিয়ে একাউন্টে প্রবেশ করুন
-          </p>
-        </div>
+    <main className="min-h-screen flex flex-col items-center bg-gray-50/30 px-4 pt-8 pb-8 sm:pt-10">
+      <div className="w-full max-w-md">
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#c00000] mb-8 tracking-wide">
+          সাইন ইন
+        </h1>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email Field */}
+        {errorMsg && (
+          <div className="bg-red-50 text-red-600 border border-red-200 text-sm p-3 rounded-md mb-4 text-center">
+            {errorMsg}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
+            <label className="block text-gray-700 text-sm font-medium mb-1.5">
               ইমেইল
             </label>
+
             <input
-              id="email"
-              name="email"
               type="email"
+              name="email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@mail.com"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all duration-200 text-sm text-gray-900 bg-white"
+              autoComplete="email"
+              className="w-full px-3.5 py-2.5 bg-[#fafafa] border border-gray-300 rounded-md outline-none focus:border-[#c00000] focus:bg-white text-gray-800 text-sm transition-all"
             />
           </div>
 
-          {/* Password Field */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label className="block text-gray-700 text-sm font-medium">
                 পাসওয়ার্ড
               </label>
+
               <Link
                 href="/forgot-password"
-                className="text-xs font-medium text-red-600 hover:underline"
+                className="text-xs font-medium text-[#c00000] hover:underline"
               >
-                পাসওয়ার্ড ভুলে গেছেন?
+                পাসওয়ার্ড ভুলে গেছেন?
               </Link>
             </div>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-red-500/20 focus:border-red-600 outline-none transition-all duration-200 text-sm text-gray-900 bg-white"
-            />
+
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                required
+                autoComplete="current-password"
+                className="w-full px-3.5 py-2.5 pr-11 bg-[#fafafa] border border-gray-300 rounded-md outline-none focus:border-[#c00000] focus:bg-white text-gray-800 text-sm transition-all"
+              />
+
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-gray-400 hover:text-[#c00000] transition-colors"
+                aria-label={
+                  showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"
+                }
+              >
+                {showPassword ? (
+                  <EyeOff size={19} strokeWidth={1.8} />
+                ) : (
+                  <Eye size={19} strokeWidth={1.8} />
+                )}
+              </button>
+            </div>
           </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-          >
-            সাইন ইন করুন
-          </button>
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#c00000] hover:bg-[#a00000] active:bg-[#800000] text-white font-medium py-3 rounded-md transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "সাইন ইন হচ্ছে..." : "সাইন ইন করুন"}
+            </button>
+          </div>
         </form>
 
-        {/* Redirect to Sign Up */}
-        <div className="mt-6 text-center text-sm text-gray-600 border-t border-gray-100 pt-5">
+        <div className="mt-5 text-center text-sm text-gray-700">
           অ্যাকাউন্ট নেই?{" "}
           <Link
-            href="/signup"
-            className="font-semibold text-red-600 hover:text-red-700 hover:underline ml-1"
+            href="/sign-up"
+            className="text-[#c00000] font-bold hover:underline"
           >
             সাইন আপ করুন
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
