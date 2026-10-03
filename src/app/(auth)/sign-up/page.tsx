@@ -159,7 +159,7 @@ export default function SignUpPage() {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="w-full mt-3 bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base"
+            className="w-full mt-3 bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-red-500 hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base cursor-pointer"
           >
             Google দিয়ে সাইন ইন করুন
           </button>
