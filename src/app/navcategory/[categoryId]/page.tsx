@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import Marquee from "@/app/components/marquee";
 
 interface NewsArticle {
   id: string;
@@ -61,7 +60,7 @@ const CategoryNewsPage = async ({ params }: PageProps) => {
   }
 
   return (
-    <><Marquee /><div className="max-w-7xl mx-auto px-4 py-6 bg-gray-50 min-h-screen">
+    <>
       
       <div className="border-b-2 border-red-700 pb-2 mb-6">
         <h1 className="text-3xl font-bold text-gray-900">{categoryTitle}</h1>
