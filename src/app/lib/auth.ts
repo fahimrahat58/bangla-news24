@@ -5,7 +5,7 @@ import { Resend } from "resend";
 
 const client = new MongoClient(process.env.BETTER_AUTH_DB_URL!);
 
-const db = client.db("bangla-news24");
+const db = client.db("bangal-news");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
