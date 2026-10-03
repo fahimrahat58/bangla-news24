@@ -56,11 +56,14 @@ export default function SignInPage() {
       const { error } = await signIn.social({
         provider: "google",
         callbackURL: "/",
+        additionalData: {
+          prompt: "select_account",
+        },
       });
 
       if (error) {
         setErrorMsg(
-          error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।"
+          error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।",
         );
         setGoogleLoading(false);
       }
@@ -128,9 +131,7 @@ export default function SignInPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-gray-400 hover:text-[#c00000] transition-colors cursor-pointer"
                 aria-label={
-                  showPassword
-                    ? "পাসওয়ার্ড লুকান"
-                    : "পাসওয়ার্ড দেখুন"
+                  showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"
                 }
               >
                 {showPassword ? (

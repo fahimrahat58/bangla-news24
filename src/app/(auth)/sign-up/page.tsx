@@ -41,7 +41,7 @@ export default function SignUpPage() {
       }
 
       setSuccessMsg(
-        "সাইন আপ সফল হয়েছে। আপনার ইমেইলে একটি verification link পাঠানো হয়েছে। ইমেইলটি verify করুন।"
+        "সাইন আপ সফল হয়েছে। আপনার ইমেইলে একটি verification link পাঠানো হয়েছে। ইমেইলটি verify করুন।",
       );
     } catch (err) {
       console.error("Sign up error:", err);
@@ -60,12 +60,13 @@ export default function SignUpPage() {
       const { error } = await signIn.social({
         provider: "google",
         callbackURL: "/",
+        additionalData: {
+          prompt: "select_account",
+        },
       });
 
       if (error) {
-        setErrorMsg(
-          error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।"
-        );
+        setErrorMsg(error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।");
         setGoogleLoading(false);
       }
     } catch (err) {
@@ -157,9 +158,7 @@ export default function SignUpPage() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-gray-400 hover:text-[#c00000] transition-colors cursor-pointer"
                     aria-label={
-                      showPassword
-                        ? "পাসওয়ার্ড লুকান"
-                        : "পাসওয়ার্ড দেখুন"
+                      showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"
                     }
                   >
                     {showPassword ? (
