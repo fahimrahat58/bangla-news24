@@ -59,69 +59,62 @@ const CategoryNewsPage = async ({ params }: PageProps) => {
 
   if (articles.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <p className="text-gray-500 text-base">
-          এই ক্যাটাগরিতে কোনো সংবাদ পাওয়া যায়নি।
-        </p>
+      <div className="max-w-7xl mx-auto px-4 py-16 text-center text-gray-600">
+        <p>এই ক্যাটাগরিতে কোনো সংবাদ পাওয়া যায়নি।</p>
       </div>
     );
   }
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {/* Category Title */}
+    <main className="max-w-7xl mx-auto px-4 py-6 bg-gray-50 min-h-screen">
       <div className="border-b-2 border-red-700 pb-2 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-gray-900">
           {categoryTitle}
         </h1>
       </div>
 
-      {/* News Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((news) => (
           <Link
             key={news.id}
             href={`/article/${news.id}`}
             className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow duration-200 flex flex-col group"
           >
-            {/* Image */}
-            <div className="relative w-full h-52 sm:h-48 bg-gray-200 overflow-hidden">
+            <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
               <Image
                 src={news.imageUrl || "/placeholder.jpg"}
                 alt={news.imageAlt || news.title}
                 fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover group-hover:scale-105 transition-transform duration-300"
               />
             </div>
 
-            {/* Content */}
-            <div className="p-4 flex flex-col flex-1">
+            <div className="p-4 flex flex-col grow justify-between">
               <div>
-                {/* Category */}
-                <span className="text-xs text-red-600 font-medium block mb-1.5">
+                <span className="text-xs text-red-600 font-medium block mb-1">
                   {news.category}
                 </span>
 
-                {/* Title */}
                 <h2 className="text-lg font-bold text-gray-800 group-hover:text-red-700 transition-colors line-clamp-2 leading-snug mb-2">
                   {news.title}
                 </h2>
 
-                {/* Description */}
-                <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
+                <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed mb-4">
                   {news.description}
                 </p>
               </div>
 
-              {/* Footer */}
-              <div className="text-xs text-gray-400 border-t border-gray-100 pt-2 mt-4 flex justify-between items-center gap-3">
+              <div className="text-xs text-gray-400 border-t border-gray-100 pt-2 mt-auto flex justify-between items-center gap-3">
                 <span>
-                  {new Date(news.firstPublished).toLocaleDateString("bn-BD", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
+                  {new Date(news.firstPublished).toLocaleDateString(
+                    "bn-BD",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  )}
                 </span>
 
                 <span className="truncate">{news.source}</span>
