@@ -20,7 +20,7 @@ const banglaFont = Noto_Sans_Bengali({
 });
 
 export const metadata: Metadata = {
-  title: "Better Auth",
+  title: "Bangla News 24",
   description: "Next.js with Better Auth",
 };
 
