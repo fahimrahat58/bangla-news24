@@ -20,23 +20,26 @@ export default function ForgotPasswordPage() {
     try {
       const { error } = await requestPasswordReset({
         email,
-        redirectTo: "/reset-password",
+        redirectTo: "https://bangla-news24.vercel.app/reset-password",
       });
 
       if (error) {
         setErrorMsg(
-          error.message || "পাসওয়ার্ড রিসেট লিংক পাঠাতে সমস্যা হয়েছে।",
+          error.message || "পাসওয়ার্ড রিসেট লিংক পাঠাতে সমস্যা হয়েছে।"
         );
         return;
       }
 
-      setMessage("আপনার ইমেইলে পাসওয়ার্ড রিসেট করার একটি লিংক পাঠানো হয়েছে।");
+      setMessage(
+        "আপনার ইমেইলে পাসওয়ার্ড রিসেট করার একটি লিংক পাঠানো হয়েছে।"
+      );
+
       setEmail("");
     } catch (error) {
       console.error("Forgot password error:", error);
 
       setErrorMsg(
-        "পাসওয়ার্ড রিসেট লিংক পাঠাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+        "পাসওয়ার্ড রিসেট লিংক পাঠাতে সমস্যা হয়েছে। আবার চেষ্টা করুন।"
       );
     } finally {
       setLoading(false);
@@ -92,7 +95,9 @@ export default function ForgotPasswordPage() {
               disabled={loading}
               className="w-full bg-[#c00000] hover:bg-[#a00000] active:bg-[#800000] text-white font-medium py-3 rounded-md transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
-              {loading ? "লিংক পাঠানো হচ্ছে..." : "পাসওয়ার্ড রিসেট লিংক পাঠান"}
+              {loading
+                ? "লিংক পাঠানো হচ্ছে..."
+                : "পাসওয়ার্ড রিসেট লিংক পাঠান"}
             </button>
           </div>
         </form>
