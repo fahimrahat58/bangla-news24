@@ -10,6 +10,7 @@ export default function SignInPage() {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -44,6 +45,30 @@ export default function SignInPage() {
       setErrorMsg("সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    setErrorMsg("");
+
+    try {
+      const { error } = await signIn.social({
+        provider: "google",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        setErrorMsg(
+          error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।"
+        );
+        setGoogleLoading(false);
+      }
+    } catch (error) {
+      console.error("Google sign in error:", error);
+
+      setErrorMsg("Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+      setGoogleLoading(false);
     }
   };
 
@@ -83,7 +108,7 @@ export default function SignInPage() {
 
               <Link
                 href="/forgot-password"
-                className="text-xs font-medium text-[#c00000] hover:underline"
+                className="text-xs font-medium text-[#c00000] hover:underline cursor-pointer"
               >
                 পাসওয়ার্ড ভুলে গেছেন?
               </Link>
@@ -101,9 +126,11 @@ export default function SignInPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-gray-400 hover:text-[#c00000] transition-colors"
+                className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-gray-400 hover:text-[#c00000] transition-colors cursor-pointer"
                 aria-label={
-                  showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"
+                  showPassword
+                    ? "পাসওয়ার্ড লুকান"
+                    : "পাসওয়ার্ড দেখুন"
                 }
               >
                 {showPassword ? (
@@ -118,19 +145,36 @@ export default function SignInPage() {
           <div className="pt-2">
             <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-[#c00000] hover:bg-[#a00000] active:bg-[#800000] text-white font-medium py-3 rounded-md transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading || googleLoading}
+              className="w-full bg-[#c00000] hover:bg-[#a00000] active:bg-[#800000] text-white font-medium py-3 rounded-md transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? "সাইন ইন হচ্ছে..." : "সাইন ইন করুন"}
             </button>
           </div>
         </form>
 
+        <div className="flex items-center gap-3 my-5">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs text-gray-400">অথবা</span>
+          <div className="h-px flex-1 bg-gray-200" />
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          disabled={googleLoading || loading}
+          className="cursor-pointer! w-full bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-[#c00000] hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {googleLoading
+            ? "Google দিয়ে সাইন ইন হচ্ছে..."
+            : "Google দিয়ে সাইন ইন করুন"}
+        </button>
+
         <div className="mt-5 text-center text-sm text-gray-700">
           অ্যাকাউন্ট নেই?{" "}
           <Link
             href="/sign-up"
-            className="text-[#c00000] font-bold hover:underline"
+            className="text-[#c00000] font-bold hover:underline cursor-pointer"
           >
             সাইন আপ করুন
           </Link>
