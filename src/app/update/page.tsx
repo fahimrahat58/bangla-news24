@@ -1,19 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { updateUser, useSession } from "@/app/lib/auth-client";
 import { getImageUrl } from "@/app/lib/image-url";
+import { useRouter } from "next/navigation";
 
 export default function ProfileUpdatePage() {
   const { data: session, isPending } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/");
+    }
+  }, [isPending, session, router]);
 
   if (isPending) {
     return <p className="py-8 text-center">লোড হচ্ছে...</p>;
   }
 
   if (!session) {
-    return <p className="py-8 text-center">প্রোফাইল দেখতে লগইন করুন</p>;
+    return null;
   }
 
   return <UpdateForm session={session} />;
@@ -53,12 +61,10 @@ function UpdateForm({ session }: { session: any }) {
   return (
     <main className="min-h-screen bg-white px-4 py-8 sm:py-10 md:py-12">
       <div className="w-full max-w-[448px] mx-auto">
-        {/* Title */}
         <h1 className="text-center text-4xl sm:text-5xl font-bold text-[#b91c1c] mb-8 sm:mb-10">
           প্রোফাইল আপডেট
         </h1>
 
-        {/* Profile Image Preview */}
         <div className="flex justify-center mb-7 sm:mb-8">
           {previewImage ? (
             <img
@@ -74,7 +80,6 @@ function UpdateForm({ session }: { session: any }) {
         </div>
 
         <form onSubmit={handleUpdate} className="space-y-5">
-          {/* Name */}
           <div>
             <label
               htmlFor="name"
@@ -94,7 +99,6 @@ function UpdateForm({ session }: { session: any }) {
             />
           </div>
 
-          {/* Email */}
           <div>
             <label
               htmlFor="email"
@@ -112,7 +116,6 @@ function UpdateForm({ session }: { session: any }) {
             />
           </div>
 
-          {/* Image URL */}
           <div>
             <label
               htmlFor="image"
@@ -131,7 +134,6 @@ function UpdateForm({ session }: { session: any }) {
             />
           </div>
 
-          {/* Message */}
           {message && (
             <p
               className={`text-center text-sm ${
@@ -142,7 +144,6 @@ function UpdateForm({ session }: { session: any }) {
             </p>
           )}
 
-          {/* Update Button */}
           <button
             type="submit"
             disabled={loading}
@@ -151,7 +152,6 @@ function UpdateForm({ session }: { session: any }) {
             {loading ? "আপডেট হচ্ছে..." : "আপডেট করুন"}
           </button>
 
-          {/* Back to Profile */}
           <Link
             href="/profile"
             className="w-full h-[48px] flex items-center justify-center border border-gray-300 hover:border-[#b91c1c] hover:text-[#b91c1c] text-gray-700 rounded-md font-medium text-sm sm:text-base transition-colors"

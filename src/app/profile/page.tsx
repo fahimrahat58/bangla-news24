@@ -1,11 +1,19 @@
 "use client";
 
-import Image from "next/image";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useSession } from "@/app/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const { data: session, isPending } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isPending && !session) {
+      router.push("/");
+    }
+  }, [isPending, session, router]);
 
   if (isPending) {
     return (
@@ -16,22 +24,7 @@ export default function ProfilePage() {
   }
 
   if (!session) {
-    return (
-      <main className="min-h-screen bg-white flex items-center justify-center px-4">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4">
-            প্রোফাইল দেখতে সাইন ইন করুন।
-          </p>
-
-          <Link
-            href="/sign-in"
-            className="inline-block bg-[#b91c1c] hover:bg-red-800 text-white px-5 py-2 rounded-md transition-colors"
-          >
-            সাইন ইন
-          </Link>
-        </div>
-      </main>
-    );
+    return null;
   }
 
   return (
