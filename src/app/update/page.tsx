@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { updateUser, useSession } from "@/app/lib/auth-client";
+import { getImageUrl } from "@/app/lib/image-url";
 
 export default function ProfileUpdatePage() {
   const { data: session, isPending } = useSession();
@@ -32,11 +32,14 @@ function UpdateForm({ session }: { session: any }) {
     setMessage("");
 
     try {
+      const finalImageUrl = getImageUrl(image);
+
       await updateUser({
         name,
-        image: image || undefined,
+        image: finalImageUrl || undefined,
       });
 
+      setImage(finalImageUrl);
       setMessage("প্রোফাইল সফলভাবে আপডেট হয়েছে");
     } catch {
       setMessage("প্রোফাইল আপডেট করা যায়নি");
@@ -44,6 +47,8 @@ function UpdateForm({ session }: { session: any }) {
       setLoading(false);
     }
   };
+
+  const previewImage = getImageUrl(image);
 
   return (
     <main className="min-h-screen bg-white px-4 py-8 sm:py-10 md:py-12">
@@ -55,13 +60,10 @@ function UpdateForm({ session }: { session: any }) {
 
         {/* Profile Image Preview */}
         <div className="flex justify-center mb-7 sm:mb-8">
-          {image ? (
-            <Image
-              src={image}
+          {previewImage ? (
+            <img
+              src={previewImage}
               alt={name || "Profile"}
-              width={112}
-              height={112}
-              unoptimized
               className="w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover border border-gray-200 shadow-sm"
             />
           ) : (

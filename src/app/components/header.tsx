@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "../../../public/logo.webp";
 import { signOut, useSession } from "@/app/lib/auth-client";
+import { getImageUrl } from "@/app/lib/image-url";
 
 const Header = () => {
   const { data: session, isPending } = useSession();
@@ -24,10 +25,8 @@ const Header = () => {
     <header className="w-full bg-white border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-3 sm:px-5 md:px-8 py-3 sm:py-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 md:gap-0">
-          {/* Left Spacer */}
           <div className="hidden md:block w-36" />
 
-          {/* Logo & Website Name */}
           <div className="flex items-center justify-center gap-2 sm:gap-3 text-center min-w-0">
             <Image
               src={logo}
@@ -49,13 +48,11 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Authentication */}
           <div className="flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 text-[11px] sm:text-xs md:text-sm font-medium w-full md:w-auto">
             {isPending ? (
               <span className="text-gray-400">লোড হচ্ছে...</span>
             ) : session ? (
               <div className="flex items-center justify-center gap-2 sm:gap-3 max-w-full">
-                {/* Profile */}
                 <div className="flex items-center gap-2 min-w-0">
                   <Link
                     href="/profile"
@@ -64,7 +61,7 @@ const Header = () => {
                   >
                     {session.user.image ? (
                       <img
-                        src={session.user.image}
+                        src={getImageUrl(session.user.image)}
                         alt={session.user.name || "User"}
                         className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-[#b91c1c]/20 hover:border-[#b91c1c] transition-all"
                       />
@@ -94,7 +91,6 @@ const Header = () => {
                   </span>
                 </div>
 
-                {/* Sign Out */}
                 <button
                   type="button"
                   onClick={handleSignOut}
