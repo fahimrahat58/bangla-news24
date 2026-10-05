@@ -101,7 +101,7 @@ export default function ProfilePage() {
 
             <div className="mt-8 flex justify-center">
               <Link
-                href="/profile/edit"
+                href="/update"
                 className="bg-[#b91c1c] hover:bg-red-800 text-white px-6 py-2.5 rounded-md font-medium transition-colors"
               >
                 প্রোফাইল এডিট
