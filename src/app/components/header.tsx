@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import logo from "../../../public/logo.webp";
@@ -63,12 +62,9 @@ const Header = () => {
                     className="shrink-0 rounded-full"
                   >
                     {session.user.image ? (
-                      <Image
+                      <img
                         src={session.user.image}
                         alt={session.user.name || "User"}
-                        width={40}
-                        height={40}
-                        unoptimized
                         className="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-[#b91c1c]/20 hover:border-[#b91c1c] transition-all"
                       />
                     ) : (
