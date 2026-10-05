@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <main className="min-h-screen bg-white flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl mx-auto text-center">
-        {/* 404 */}
+        {/* 404 Number */}
         <div className="relative mb-6">
           <h1 className="text-[120px] sm:text-[160px] md:text-[200px] leading-none font-black tracking-tight text-[#b91c1c]/10 select-none">
             404
@@ -48,21 +48,14 @@ export default function NotFound() {
           হয়েছে অথবা এই ঠিকানায় আর নেই।
         </p>
 
-        {/* Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+        {/* Home Button */}
+        <div className="mt-8 flex justify-center">
           <Link
             href="/"
-            className="w-full sm:w-auto min-w-[150px] h-11 px-6 flex items-center justify-center bg-[#b91c1c] hover:bg-red-800 text-white rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
+            className="min-w-[170px] h-11 px-6 flex items-center justify-center bg-[#b91c1c] hover:bg-red-800 text-white rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md"
           >
             হোমে ফিরে যান
           </Link>
-
-          <button
-            onClick={() => window.history.back()}
-            className="w-full sm:w-auto min-w-[150px] h-11 px-6 flex items-center justify-center border border-gray-300 hover:border-[#b91c1c] hover:text-[#b91c1c] text-gray-700 rounded-lg font-medium transition-all duration-200"
-          >
-            আগের পেজে যান
-          </button>
         </div>
 
         {/* Bottom Text */}
