@@ -12,6 +12,7 @@ export default function SignInPage() {
 
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [facebookLoading, setFacebookLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
@@ -60,7 +61,7 @@ export default function SignInPage() {
 
       if (error) {
         setErrorMsg(
-          error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।",
+          error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে.",
         );
         setGoogleLoading(false);
       }
@@ -68,6 +69,31 @@ export default function SignInPage() {
       console.error("Google sign in error:", error);
       setErrorMsg("Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
       setGoogleLoading(false);
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    setFacebookLoading(true);
+    setErrorMsg("");
+
+    try {
+      const { error } = await signIn.social({
+        provider: "facebook",
+        callbackURL: "/",
+      });
+
+      if (error) {
+        setErrorMsg(
+          error.message || "Facebook দিয়ে সাইন ইন করতে সমস্যা হয়েছে।",
+        );
+        setFacebookLoading(false);
+      }
+    } catch (error) {
+      console.error("Facebook sign in error:", error);
+      setErrorMsg(
+        "Facebook দিয়ে সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+      );
+      setFacebookLoading(false);
     }
   };
 
@@ -165,7 +191,7 @@ export default function SignInPage() {
           <div className="pt-2">
             <button
               type="submit"
-              disabled={loading || googleLoading}
+              disabled={loading || googleLoading || facebookLoading}
               className="w-full bg-[#c00000] hover:bg-[#a00000] active:bg-[#800000] text-white font-medium py-3 rounded-md transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? "সাইন ইন হচ্ছে..." : "সাইন ইন করুন"}
@@ -179,16 +205,29 @@ export default function SignInPage() {
           <div className="h-px flex-1 bg-gray-200" />
         </div>
 
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          disabled={googleLoading || loading}
-          className="cursor-pointer! w-full bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-[#c00000] hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {googleLoading
-            ? "Google দিয়ে সাইন ইন হচ্ছে..."
-            : "Google দিয়ে সাইন ইন করুন"}
-        </button>
+        <div className="space-y-3">
+          <button
+            type="button"
+            onClick={handleGoogleLogin}
+            disabled={googleLoading || loading || facebookLoading}
+            className="cursor-pointer! w-full bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-[#c00000] hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {googleLoading
+              ? "Google দিয়ে সাইন ইন হচ্ছে..."
+              : "Google দিয়ে সাইন ইন করুন"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleFacebookLogin}
+            disabled={facebookLoading || loading || googleLoading}
+            className="cursor-pointer! w-full bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-[#1877F2] hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {facebookLoading
+              ? "Facebook দিয়ে সাইন ইন হচ্ছে..."
+              : "Facebook দিয়ে সাইন ইন করুন"}
+          </button>
+        </div>
 
         <div className="mt-5 text-center text-sm text-gray-700">
           অ্যাকাউন্ট নেই?{" "}

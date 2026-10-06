@@ -11,6 +11,7 @@ export default function SignUpPage() {
 
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const [facebookLoading, setFacebookLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,9 +27,7 @@ export default function SignUpPage() {
 
     const name = formData.get("name")?.toString().trim() || "";
 
-    const image = getImageUrl(
-      formData.get("image")?.toString().trim() || "",
-    );
+    const image = getImageUrl(formData.get("image")?.toString().trim() || "");
 
     const email = formData.get("email")?.toString().trim() || "";
     const password = formData.get("password")?.toString() || "";
@@ -43,9 +42,7 @@ export default function SignUpPage() {
       });
 
       if (result.error) {
-        setErrorMsg(
-          result.error.message || "সাইন আপ করতে সমস্যা হয়েছে।",
-        );
+        setErrorMsg(result.error.message || "সাইন আপ করতে সমস্যা হয়েছে।");
         return;
       }
 
@@ -53,9 +50,7 @@ export default function SignUpPage() {
         "আপনার অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে। আপনার ইমেইলে একটি নিশ্চিতকরণ লিংক পাঠানো হয়েছে। অনুগ্রহ করে আপনার ইমেইল খুলে লিংকটিতে ক্লিক করে অ্যাকাউন্টটি নিশ্চিত করুন। নিশ্চিতকরণ সম্পন্ন হলে আপনাকে স্বয়ংক্রিয়ভাবে হোম পেজে নিয়ে যাওয়া হবে।",
       );
     } catch {
-      setErrorMsg(
-        "একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। আবার চেষ্টা করুন।",
-      );
+      setErrorMsg("একটি অপ্রত্যাশিত ত্রুটি ঘটেছে। আবার চেষ্টা করুন।");
     } finally {
       setLoading(false);
     }
@@ -73,14 +68,37 @@ export default function SignUpPage() {
 
       if (result.error) {
         setErrorMsg(
-          result.error.message ||
-            "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।",
+          result.error.message || "Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে.",
         );
         setGoogleLoading(false);
       }
     } catch {
-      setErrorMsg("Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে।");
+      setErrorMsg("Google দিয়ে সাইন ইন করতে সমস্যা হয়েছে.");
       setGoogleLoading(false);
+    }
+  };
+
+  const handleFacebookLogin = async () => {
+    setFacebookLoading(true);
+    setErrorMsg("");
+
+    try {
+      const result = await signIn.social({
+        provider: "facebook",
+        callbackURL: "/",
+      });
+
+      if (result.error) {
+        setErrorMsg(
+          result.error.message || "Facebook দিয়ে সাইন ইন করতে সমস্যা হয়েছে.",
+        );
+        setFacebookLoading(false);
+      }
+    } catch {
+      setErrorMsg(
+        "Facebook দিয়ে সাইন ইন করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।",
+      );
+      setFacebookLoading(false);
     }
   };
 
@@ -129,7 +147,6 @@ export default function SignUpPage() {
         {!successMsg && (
           <>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Name */}
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-1.5">
                   নাম
@@ -143,13 +160,9 @@ export default function SignUpPage() {
                 />
               </div>
 
-              {/* Image URL */}
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-1.5">
-                  Image{" "}
-                  <span className="text-gray-400">
-                    (Optional)
-                  </span>
+                  Image <span className="text-gray-400">(Optional)</span>
                 </label>
 
                 <input
@@ -160,7 +173,6 @@ export default function SignUpPage() {
                 />
               </div>
 
-              {/* Email */}
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-1.5">
                   ইমেইল
@@ -175,7 +187,6 @@ export default function SignUpPage() {
                 />
               </div>
 
-              {/* Password */}
               <div>
                 <label className="block text-gray-700 text-sm font-medium mb-1.5">
                   পাসওয়ার্ড
@@ -192,46 +203,32 @@ export default function SignUpPage() {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowPassword((prev) => !prev)
-                    }
+                    onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-gray-400 hover:text-[#c00000] transition-colors cursor-pointer"
                     aria-label={
-                      showPassword
-                        ? "পাসওয়ার্ড লুকান"
-                        : "পাসওয়ার্ড দেখুন"
+                      showPassword ? "পাসওয়ার্ড লুকান" : "পাসওয়ার্ড দেখুন"
                     }
                   >
                     {showPassword ? (
-                      <EyeOff
-                        size={19}
-                        strokeWidth={1.8}
-                      />
+                      <EyeOff size={19} strokeWidth={1.8} />
                     ) : (
-                      <Eye
-                        size={19}
-                        strokeWidth={1.8}
-                      />
+                      <Eye size={19} strokeWidth={1.8} />
                     )}
                   </button>
                 </div>
               </div>
 
-              {/* Sign Up Button */}
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={loading || googleLoading}
+                  disabled={loading || googleLoading || facebookLoading}
                   className="w-full bg-[#c00000] hover:bg-[#a00000] active:bg-[#800000] text-white font-medium py-3 rounded-md transition-colors text-base disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
-                  {loading
-                    ? "সাইন আপ হচ্ছে..."
-                    : "সাইন আপ করুন"}
+                  {loading ? "সাইন আপ হচ্ছে..." : "সাইন আপ করুন"}
                 </button>
               </div>
             </form>
 
-            {/* Sign In + Google */}
             <div className="mt-5 text-center text-sm text-gray-700">
               <div>
                 অ্যাকাউন্ট আছে?{" "}
@@ -246,33 +243,42 @@ export default function SignUpPage() {
               <div className="flex items-center gap-3 my-5">
                 <div className="h-px flex-1 bg-gray-200" />
 
-                <span className="text-xs text-gray-400">
-                  অথবা
-                </span>
+                <span className="text-xs text-gray-400">অথবা</span>
 
                 <div className="h-px flex-1 bg-gray-200" />
               </div>
 
-              <button
-                type="button"
-                onClick={handleGoogleLogin}
-                disabled={googleLoading || loading}
-                className="cursor-pointer! w-full bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-[#c00000] hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {googleLoading
-                  ? "Google দিয়ে সাইন ইন হচ্ছে..."
-                  : "Google দিয়ে সাইন ইন করুন"}
-              </button>
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={handleGoogleLogin}
+                  disabled={googleLoading || loading || facebookLoading}
+                  className="cursor-pointer! w-full bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-[#c00000] hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {googleLoading
+                    ? "Google দিয়ে সাইন ইন হচ্ছে..."
+                    : "Google দিয়ে সাইন ইন করুন"}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleFacebookLogin}
+                  disabled={facebookLoading || loading || googleLoading}
+                  className="cursor-pointer! w-full bg-white border border-gray-300 hover:bg-gray-50 hover:border-gray-400 hover:text-[#1877F2] hover:shadow-md hover:-translate-y-0.5 text-gray-800 font-medium py-3 rounded-md transition-all duration-200 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {facebookLoading
+                    ? "Facebook দিয়ে সাইন ইন হচ্ছে..."
+                    : "Facebook দিয়ে সাইন ইন করুন"}
+                </button>
+              </div>
             </div>
           </>
         )}
 
-        {/* Success Message */}
         {successMsg && (
           <div className="text-center mt-5">
             <p className="text-sm text-gray-600 mb-3">
-              ইমেইলটি নিশ্চিত করার পর আপনার অ্যাকাউন্ট ব্যবহার
-              করতে পারবেন।
+              ইমেইলটি নিশ্চিত করার পর আপনার অ্যাকাউন্ট ব্যবহার করতে পারবেন।
             </p>
 
             <Link

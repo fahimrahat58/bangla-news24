@@ -9,6 +9,8 @@ const client = new MongoClient(process.env.BETTER_AUTH_DB_URL!);
 const db = client.db("bangla-news247");
 
 export const auth = betterAuth({
+  baseURL: "https://bangla-news24-7.vercel.app",
+
   database: mongodbAdapter(db, {
     client,
   }),
@@ -121,6 +123,11 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    },
+
+    facebook: {
+      clientId: process.env.FACEBOOK_CLIENT_ID!,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET!,
     },
   },
 });
